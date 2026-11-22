@@ -20,13 +20,13 @@ Bản portable cần WebView2 có sẵn trên Windows 10/11. Dữ liệu của m
 
 ```text
 ZimiBrowser-2.1.6-x64-setup.exe
-6E43F049078FC02FD6DAAD933BA8EFF7550AF604486DC40E5B403FF3ACC90784
+0731467D56E83239CC4095FFAA92974CBC20F546589E4292590F031E1E6FB952
 
 ZimiBrowser-2.1.6-x64.msi
-28253525D165191480447B69676BDA8D21D7C2F7725B2F2D79EC5A85359E0522
+F2B78F573F7B6F06BC6F6995129882D6254DD2A95FDB6B893929FC8A3119AB0C
 
 ZimiBrowser-portable-win-x64.exe
-C8AD5EB9CA971C2616B68D8CE50D0E0BB913CB406846EC5E6A7D2EDEC23D9B89
+8E9930F5D3156BA6F5A63C2A546703FF97C849D5A1534D3FEB99A8887462E772
 ```
 
 ## Có gì trong bản này
@@ -36,7 +36,9 @@ C8AD5EB9CA971C2616B68D8CE50D0E0BB913CB406846EC5E6A7D2EDEC23D9B89
 - Áp logo mẫu **04 – Trình duyệt an toàn** cho icon app, About, README và component trong app.
 - Đóng gói sẵn engine Chromium `158.0.8127.36`, 220 dấu vân tay và manifest offline. Không tải runtime/fingerprint từ CDN khi cài hoặc dùng bình thường.
 - Engine zip được chia thành 4 phần trong source vì GitHub public fork không nhận LFS; `build.rs` tự ghép khi build.
-- Sửa lỗi crash lúc khởi động do plugin updater nhận cấu hình `null`. Cấu hình mới để endpoints rỗng nên app không tự cập nhật qua mạng.
+- Sửa lỗi crash lúc khởi động do plugin updater nhận cấu hình `null`. Cấu hình mới để endpoints rỗng nên app không tự tải bản cập nhật qua mạng.
+- Ngắt popup dùng thử/quảng cáo ShardX lúc khởi động. Trang ShardX, API key, đơn hàng và import proxy vẫn dùng bình thường.
+- Sửa so sánh phiên bản: tag `v2.1.6-zimi-final` không còn bị coi là bản mới hơn `2.1.6`. Khi phát hành bản có số phiên bản cao hơn, app vẫn hiện thông báo cập nhật và link tải từ GitHub Releases.
 - Giữ nguyên toàn bộ logic gốc: hồ sơ, proxy, dấu vân tay, tiện ích mở rộng, dấu trang, tự động hóa, nhóm/đồng bộ, Local API, MCP và Trash.
 
 ## Lưu ý khi dùng
@@ -45,17 +47,18 @@ C8AD5EB9CA971C2616B68D8CE50D0E0BB913CB406846EC5E6A7D2EDEC23D9B89
 - Proxy trong trang preview `127.0.0.1:1420` là dữ liệu giả, chỉ để xem giao diện. Không import vào app thật.
 - Proxy free có thể chết bất kỳ lúc nào. Bấm **Test** trước khi dùng; nếu trang báo `ERR_SOCKS_CONNECTION_FAILED`, hãy đổi proxy rồi **Dừng/Bắt đầu** lại hồ sơ.
 - Không dùng proxy free cho tài khoản thật, API key hoặc mã 2FA.
-- Để cập nhật phiên bản mới, chạy bộ cài mới; ứng dụng không tự kiểm tra cập nhật nền.
+- Để nhận bản mới, publish một GitHub Release có số phiên bản cao hơn; app sẽ báo **Cập nhật** và mở trang tải. Xem quy trình tại [FAQ mục 13](CAU_HOI_THUONG_GAP.md). Hiện app không tự tải/tự cài bản mới.
 
 Giải thích đầy đủ các tình huống trên tại [FAQ và lỗi đã gặp](CAU_HOI_THUONG_GAP.md) và [hướng dẫn sử dụng](HUONG_DAN_NGUOI_DUNG.md).
 
 ## Kiểm tra chất lượng
 
 - `npm run check`: pass, 106/106 unit test; i18n, contrast, colors sạch.
-- `cargo check`: pass.
+- `cargo check --tests`: pass.
 - `npm run tauri build`: pass, tạo đủ MSI và NSIS.
 - Resource offline: hash 4 phần khớp file engine ghép; 220 fingerprint được nạp đúng lần đầu chạy.
 - Metadata file cài: `ProductName = ZimiBrowser`, `ProductVersion = 2.1.6`.
 - Đã thử bấm shortcut Desktop sau khi cài: app khởi động, tạo dữ liệu và nạp 220 fingerprint thành công.
+- Kiểm tra accessibility sau khởi động: không còn dialog dùng thử ShardX, không còn huy hiệu cập nhật giả.
 
 `cargo test` biên dịch được nhưng binary test debug trên máy Windows build gặp `STATUS_ENTRYPOINT_NOT_FOUND` ở khâu chạy; đây là vấn đề loader môi trường của test binary, không ảnh hưởng artifact release.

@@ -206,7 +206,57 @@ D:\PHANMEM\ZimiBrowser
 
 Có thể xóa thư mục rỗng sau khi tắt/restart phiên làm việc nếu Windows vẫn giữ.
 
-## 12. Kiểm tra trước khi phát hành
+## 12. Popup dùng thử ShardX và huy hiệu “Cập nhật” giả
+
+Popup **“Nhận 100 MB residential cao cấp miễn phí”** không phải lỗi và không phải thông báo bắt buộc. Nó do `PsTrialModal` tạo: mỗi lần mở app, nếu chưa có API key, component hỏi public site API của ShardX xem có chiến dịch dùng thử không rồi hiện dialog.
+
+Trong ZimiBrowser, popup này đã bị **ngắt mount vĩnh viễn** tại `src/app/App.tsx`. Nghĩa là:
+
+- Không còn dialog dùng thử/chào sân ShardX lúc mở app.
+- Không còn request `ps_trial_offer` cho mục đích quảng cáo này.
+- **Không tắt ShardX**: trang ShardX, nhập/đổi API key, đơn hàng, dung lượng, import proxy và kết nối tài khoản vẫn hoạt động bình thường.
+
+Huy hiệu **Cập nhật** ở góc dưới cũng đã được sửa. Tag phát hành `v2.1.6-zimi-final` từng bị hàm so sánh cũ coi là mới hơn `2.1.6` vì phần hậu tố `-zimi-final`. Hàm `norm_ver` trong `runtime.rs` giờ bỏ hậu tố `-`/`+` trước khi so sánh, nên phiên bản cùng số không còn báo cập nhật giả.
+
+## 13. Phát hành bản mới để người dùng nhận thông báo cập nhật
+
+App có sẵn cơ chế kiểm tra phát hành:
+
+- 8 giây sau khi mở app và sau đó mỗi 6 giờ, app gọi `https://api.github.com/repos/caophongofficial/ZimiBrowser/releases/latest`.
+- Nếu số phiên bản của release mới **lớn hơn** phiên bản đang cài, sidebar hiện huy hiệu **Cập nhật** và app mở hỏi:
+  ```text
+  Đã có ZimiBrowser {v}
+  ```
+- Với cấu hình hiện tại, nút ở thông báo là **Tải xuống**, mở đúng trang release. App **không tự tải và tự cài**; muốn tự cài thì cần bật thêm updater có chữ ký (xem cuối mục này).
+
+Để người dùng nhận được thông báo, phải làm đủ 3 bước:
+
+1. Tăng phiên bản ở **cả 3 file**:
+   ```text
+   package.json
+   src-tauri/tauri.conf.json
+   src-tauri/Cargo.toml
+   ```
+   Ví dụ `2.1.6` → `2.1.7`.
+
+2. Commit và push lên `origin/main`.
+
+3. Tạo **GitHub Release mới, đã publish** trên fork với tag dạng:
+   ```text
+   v2.1.7
+   ```
+   Đính kèm `ZimiBrowser-2.1.7-x64-setup.exe`, `.msi` và bản portable.
+
+Lưu ý:
+
+- **Chỉ commit thì chưa đủ.** Phải publish Release, vì app đọc API `/releases/latest`.
+- Release phải là bản thường, **không phải draft/prerelease**, nếu không API `/releases/latest` sẽ không trả về.
+- Nên dùng tag `vX.Y.Z` không có hậu tố cho các bản phát hành mới. Hàm so sánh đã bỏ hậu tố `-`/`+`, nên `v2.1.6-zimi-final` không gây báo giả, nhưng tag gọn vẫn dễ quản lý hơn.
+- `.github/workflows/release.yml` đã có sẵn trigger `v*`: push tag mới sẽ tự build đa nền tảng nếu cấu hình secrets đầy đủ. Với fork hiện tại, cách chắc nhất vẫn là build local rồi upload asset như bản `v2.1.6-zimi-final`.
+
+Nếu sau này muốn **tự động tải và cài** thay vì chỉ thông báo, cần bật Tauri updater thật: tạo cặp khóa ký, khai `pubkey` + `endpoints` trong `tauri.conf.json`, bật lại `createUpdaterArtifacts`, và dùng release workflow tạo `latest.json` có chữ ký. Đây là thay đổi lớn hơn; hiện tại mình giữ chế độ an toàn là **thông báo + link tải**.
+
+## 14. Kiểm tra trước khi phát hành
 
 Các lệnh đã chạy thành công cho bản final:
 

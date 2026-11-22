@@ -14,7 +14,6 @@ import { UnsavedGuard } from "../widgets/UnsavedGuard/UnsavedGuard";
 import { StarModal } from "../widgets/StarModal/StarModal";
 import { HelperWatcher } from "../widgets/HelperWatcher";
 import { WhatsNewGate } from "../widgets/WhatsNewGate";
-import { PsTrialModal } from "../features/proxyshard";
 import { ProfilesPage } from "../pages/profiles";
 import { ShellWindowControls } from "../widgets/WindowControls/WindowControls";
 import { AssignProxiesHost, FolderDialog } from "../features/manage-profiles";
@@ -362,7 +361,8 @@ function Shell() {
       <CommandPalette />
       <ShortcutSheet />
       <WelcomeDialog />
-      <PsTrialModal />
+      {/* ZimiBrowser: ShardX trial/promotional popups are intentionally not mounted.
+          The ShardX page, API key connection, orders and proxies stay unchanged. */}
       <TourLayer />
       <TourEndCard />
       <ShellWindowControls />

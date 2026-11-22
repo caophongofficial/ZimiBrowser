@@ -2185,8 +2185,12 @@ pub struct LauncherVersionInfo {
     pub release_url: Option<String>,
 }
 
+/// Drops a leading `v` and any suffix after `-` or `+`, so a release tag such
+/// as `v2.1.6-zimi-final` compares equal to the packaged version `2.1.6`.
 fn norm_ver(v: &str) -> &str {
-    v.strip_prefix('v').unwrap_or(v)
+    let v = v.strip_prefix('v').unwrap_or(v);
+    let end = v.find(|c: char| c == '-' || c == '+').unwrap_or(v.len());
+    &v[..end]
 }
 
 /// Best-effort SemVer compare, lex fallback per component.
@@ -2206,6 +2210,19 @@ fn is_newer(latest: &str, current: &str) -> bool {
         }
     }
     false
+}
+
+#[cfg(test)]
+mod launcher_version_tests {
+    use super::is_newer;
+
+    #[test]
+    fn release_tag_suffix_is_not_a_newer_version() {
+        assert!(!is_newer("v2.1.6-zimi-final", "2.1.6"));
+        assert!(!is_newer("v2.1.6+build.3", "2.1.6"));
+        assert!(is_newer("v2.1.7", "2.1.6"));
+        assert!(is_newer("v2.2.0-rc1", "2.1.6"));
+    }
 }
 
 #[tauri::command]
