@@ -4,6 +4,12 @@ node_modules
 dist/
 __pycache__/
 *.pyc
+# local build tools kept inside the project folder (portable cmake)
+/tools/
+# packaged binaries belong on GitHub Releases, not in source
+/release/
+# assembled from src-tauri/bundled/runtime-parts at build time
+/src-tauri/bundled/ShardX-Windows.zip
 /src-tauri/gen/schemas/
 /team-server/target/
 /crates/*/target/

@@ -12,18 +12,17 @@ import { renderRich, type RichTags } from "./rich";
 // A key with no entry in the chosen language falls back to English, and a key
 // in no file at all renders as the key — loud on screen, which is what you
 // want while a screen is being built.
-export type Lang = "en" | "zh" | "ru";
+export type Lang = "vi" | "en" | "ru" | "zh";
 
 // English is always in: every language falls back to it, and the palette
 // finds another language's commands by their English names. The others load
-// when they are wanted (`loadLang`), each as a chunk of its own: Chinese's
-// 105 KB were the largest part of the startup script, and an English UI never
-// reads them.
+// when they are wanted (`loadLang`), each as a chunk of its own.
 const EN = en as Record<string, string>;
 const DICTS: Partial<Record<Lang, Record<string, string>>> = { en: EN };
 const LOADERS: Record<Exclude<Lang, "en">, () => Promise<{ default: unknown }>> = {
-  zh: () => import("./locales/zh.json"),
+  vi: () => import("./locales/vi.json"),
   ru: () => import("./locales/ru.json"),
+  zh: () => import("./locales/zh.json"),
 };
 const loading = new Map<Lang, Promise<void>>();
 
@@ -41,9 +40,10 @@ export function loadLang(lang: Lang): Promise<void> {
 }
 
 export const LANG_OPTIONS: { value: Lang; label: string }[] = [
+  { value: "vi", label: "Tiếng Việt" },
   { value: "en", label: "English" },
-  { value: "zh", label: "中文（简体）" },
   { value: "ru", label: "Русский" },
+  { value: "zh", label: "中文（简体）" },
 ];
 
 /** Every language's words, for a check that spans them all (a View's name). */
@@ -57,21 +57,18 @@ function load(): Lang {
   try {
     const v = localStorage.getItem(STORAGE_KEY);
     if (isLang(v)) return v;
-    // A Chinese or Russian system gets its language the first time, without
-    // being asked.
-    const sys = navigator.language?.toLowerCase() ?? "";
-    if (sys.startsWith("zh")) return "zh";
-    if (sys.startsWith("ru")) return "ru";
-    return "en";
+    // First run is always Vietnamese; the other languages are choices, not
+    // system defaults. The picker order is vi, en, ru, zh.
+    return "vi";
   } catch {
-    return "en";
+    return "vi";
   }
 }
 
 /** The page's language, so screen readers, fonts and quotes follow it (WCAG 3.1.1). */
-const HTML_LANG: Record<Lang, string> = { en: "en", zh: "zh-CN", ru: "ru" };
+const HTML_LANG: Record<Lang, string> = { vi: "vi", en: "en", ru: "ru", zh: "zh-CN" };
 /** Dates and numbers follow the UI language, not the computer's (WRITE-11). */
-const INTL_LOCALE: Record<Lang, string> = { en: "en-US", zh: "zh-CN", ru: "ru-RU" };
+const INTL_LOCALE: Record<Lang, string> = { vi: "vi-VN", en: "en-US", ru: "ru-RU", zh: "zh-CN" };
 /** The locale Intl formatters use for `lang`. */
 export const intlLocale = (lang: Lang): string => INTL_LOCALE[lang] ?? INTL_LOCALE.en;
 
@@ -90,7 +87,7 @@ type LangState = {
 /** The language last asked for: a slower load never overrides a later choice. */
 let wanted: Lang | null = null;
 /** The language that is stored (or the first run's), whatever is shown. */
-let saved: Lang = "en";
+let saved: Lang = "vi";
 export const savedLang = (): Lang => saved;
 
 export const useLang = create<LangState>((set) => {
@@ -145,6 +142,7 @@ export function formatCount(lang: Lang, n: number): string {
 const PLURAL = /\{(\w+)\|([^{}]*)\}/g;
 const PLURAL_INDEX: Partial<Record<Lang, Partial<Record<Intl.LDMLPluralRule, number>>>> = {
   ru: { one: 0, few: 1, many: 2, other: 1 },
+  vi: { other: 0 },
 };
 const pluralRules = new Map<Lang, Intl.PluralRules>();
 

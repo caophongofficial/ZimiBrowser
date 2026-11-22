@@ -17,7 +17,7 @@ type Mock = {
   };
 };
 
-const BACKUP = "/Users/you/Library/Application Support/shardx-launcher-backup-2026-09-01-120000";
+const BACKUP = "/Users/you/Library/Application Support/zimibrowser-backup-2026-09-01-120000";
 
 const storage = async (page: Page) => {
   await openApp(page, { section: "settings" });
@@ -221,7 +221,7 @@ async function unfinished(page: Page) {
     const m = (window as unknown as { __shardxMock: { state: Record<string, unknown>; save: () => void } }).__shardxMock;
     m.state.resetPending = {
       journal: "/Users/you/Library/Application Support/com.proxyshard.shardx/reset-in-progress.json",
-      backups: [backup, "/Volumes/T7/shardx-launcher-backup-2026-09-01-120000"], moved: 7, total: 22, missing: [], error: null,
+      backups: [backup, "/Volumes/T7/zimibrowser-backup-2026-09-01-120000"], moved: 7, total: 22, missing: [], error: null,
     };
     m.save();
   }, BACKUP);
@@ -236,7 +236,7 @@ async function unfinished(page: Page) {
 test("a reset that did not finish opens on its own screen, and Undo puts everything back", async ({ page }) => {
   const screen = await unfinished(page);
   await expect(screen.locator("[data-reset-pending-where]")).toHaveText(
-    `Delete all data stopped partway. Some of your data is in ${BACKUP} and /Volumes/T7/shardx-launcher-backup-2026-09-01-120000.`,
+    `Delete all data stopped partway. Some of your data is in ${BACKUP} and /Volumes/T7/zimibrowser-backup-2026-09-01-120000.`,
   );
   await expect(screen).toContainText("7 of 22 items were moved.");
   const reloaded = page.waitForEvent("load", { timeout: 15_000 });
@@ -311,14 +311,14 @@ test("a reset waiting on a disk says which one to connect", async ({ page }) => 
   await page.evaluate((notes) => {
     const m = (window as unknown as { __shardxMock: { state: Record<string, unknown>; save: () => void } }).__shardxMock;
     m.state.resetPending = {
-      journal: notes, backups: ["/Users/you/Library/Application Support/shardx-launcher-backup-2026-09-01-120000", "/Volumes/T7/shardx-launcher-backup-2026-09-01-120000"],
-      moved: 7, total: 22, missing: ["/Volumes/T7/shardx-launcher-backup-2026-09-01-120000"], error: null,
+      journal: notes, backups: ["/Users/you/Library/Application Support/zimibrowser-backup-2026-09-01-120000", "/Volumes/T7/zimibrowser-backup-2026-09-01-120000"],
+      moved: 7, total: 22, missing: ["/Volumes/T7/zimibrowser-backup-2026-09-01-120000"], error: null,
     };
     m.save();
   }, NOTES);
   await page.reload();
   const screen = page.locator("[data-reset-pending]");
-  await expect(screen.locator("[data-reset-pending-missing]")).toHaveText("Connect the disk with /Volumes/T7/shardx-launcher-backup-2026-09-01-120000, then try again.", { timeout: 15_000 });
+  await expect(screen.locator("[data-reset-pending-missing]")).toHaveText("Connect the disk with /Volumes/T7/zimibrowser-backup-2026-09-01-120000, then try again.", { timeout: 15_000 });
   await expect(screen.getByRole("button", { name: "Undo the reset" })).toBeVisible();
   await expect(screen.getByRole("button", { name: "Set these notes aside" })).toBeVisible();
 });

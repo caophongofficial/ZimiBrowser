@@ -248,6 +248,22 @@ export const ChevronRightIcon = make(ArrowRight01Icon);
  *  `animate-spin`; it keeps turning under Reduce motion (ANIM-05). */
 export const SpinnerIcon = make(Loading03Icon, "spinner");
 
+export function ZimiLogo() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.5 3h15v3.1l-9.2 9.1H17.5V18h-15v-3.1l9.2-9.1H2.5V3Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function ZimiMini() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.5 3h15v3.1l-9.2 9.1H17.5V18h-15v-3.1l9.2-9.1H2.5V3Z" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function ShardLogo() {
   return (
     <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -40,7 +40,6 @@ import { useTeamTrash, useTeamTrashShown, wireTeamTrash } from "../features/team
 import { trashList } from "../entities/trash";
 import { useStoreChanged } from "../shared/hooks/useStoreChanged";
 import { useQuitGuard } from "../shared/hooks/useQuitGuard";
-import { useLauncherUpdatePrompt } from "../features/launcher-update";
 import { useLauncherWarning } from "../shared/hooks/useLauncherWarning";
 import { trackSection } from "../shared/lib/analytics";
 import { focusIsLost, focusPageStart, landOnPage } from "../shared/lib/focus";
@@ -312,7 +311,6 @@ function Shell() {
   useAppKeys();
   // Quit (tray, Cmd+Q) asks about unsaved changes, then names the team and synced profiles it closes.
   useQuitGuard(confirmOpenSessions);
-  useLauncherUpdatePrompt();
   useThemeBridge();
   useWarmPages();
   usePreloadPages();

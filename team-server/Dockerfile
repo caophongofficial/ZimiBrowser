@@ -17,7 +17,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
 
 # glibc and nothing else: no shell, no package manager.
 FROM gcr.io/distroless/cc-debian12:nonroot
-LABEL org.opencontainers.image.source="https://github.com/ProxyShard/ShardBrowser" \
+LABEL org.opencontainers.image.source="https://github.com/caophongofficial/ZimiBrowser" \
       org.opencontainers.image.description="ShardBrowser team server" \
       org.opencontainers.image.licenses="MIT"
 COPY --from=build /out/shardbrowser-team-server /usr/local/bin/shardbrowser-team-server

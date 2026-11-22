@@ -1,4 +1,4 @@
-// $CONFIG/shardx-launcher/: settings.json, proxies.json, bookmarks.json, and
+// $CONFIG/zimibrowser/: settings.json, proxies.json, bookmarks.json, and
 // under data_root() — profiles/, user-data/, extensions/, trash/.
 //
 // data_root() is movable to another disk from Settings; the config files stay
@@ -14,7 +14,7 @@ pub fn config_root() -> Result<PathBuf> {
     #[cfg(test)]
     let root = test_config_or_panic("config root");
     #[cfg(not(test))]
-    let root = dirs::config_dir().context("OS config dir unavailable")?.join("shardx-launcher");
+    let root = dirs::config_dir().context("OS config dir unavailable")?.join("zimibrowser");
     std::fs::create_dir_all(&root)?;
     Ok(root)
 }
@@ -25,7 +25,7 @@ pub fn local_root() -> Result<PathBuf> {
     #[cfg(test)]
     let root = test_config_or_panic("local root").join("local");
     #[cfg(not(test))]
-    let root = dirs::data_local_dir().context("OS local data dir unavailable")?.join("shardx-launcher");
+    let root = dirs::data_local_dir().context("OS local data dir unavailable")?.join("zimibrowser");
     std::fs::create_dir_all(&root)?;
     Ok(root)
 }
@@ -267,8 +267,8 @@ mod cache_twin_tests {
     #[cfg(any(target_os = "macos", target_os = "linux"))]
     #[test]
     fn a_profile_in_the_config_folder_has_its_cache_in_the_cache_folder() {
-        let udd = dirs::config_dir().unwrap().join("shardx-launcher/user-data/abc");
-        assert_eq!(browser_cache_twin(&udd), Some(dirs::cache_dir().unwrap().join("shardx-launcher/user-data/abc")));
+        let udd = dirs::config_dir().unwrap().join("zimibrowser/user-data/abc");
+        assert_eq!(browser_cache_twin(&udd), Some(dirs::cache_dir().unwrap().join("zimibrowser/user-data/abc")));
     }
 
     #[test]

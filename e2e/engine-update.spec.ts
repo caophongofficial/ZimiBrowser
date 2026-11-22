@@ -257,7 +257,7 @@ test("a first install refused for the launcher's version says so in words", asyn
   await openApp(page);
   await appModule(page, "/src/shared/lib/errors.ts", "__e");
   const said = (m: string) => page.evaluate((m) => (window as unknown as { __e: { explainError(e: unknown): string } }).__e.explainError(m), m);
-  expect(await said("This engine build needs ShardBrowser Launcher 2.2.0 or newer — you are on 2.0.3. Update the launcher first."))
+  expect(await said("This engine build needs ZimiBrowser 2.2.0 or newer — you are on 2.0.3. Update the launcher first."))
     .toBe("This browser engine needs ShardBrowser 2.2.0 or newer, and this is 2.0.3. Update ShardBrowser first.");
   expect(await said("Host platform has no published ShardBrowser engine archive")).toBe("There’s no browser engine for this computer’s system yet.");
 });

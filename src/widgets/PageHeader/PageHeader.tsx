@@ -72,7 +72,7 @@ export function PageHeader({ title, lead, count, help, after, filter, actions, w
   const open = unfolded || !!filter?.value;
 
   // The window title, and the Windows task switcher, name the page (A11Y-11).
-  useEffect(() => { document.title = `${title} – ShardBrowser`; }, [title]);
+  useEffect(() => { document.title = `${title} – ZimiBrowser`; }, [title]);
 
   const focusFilter = () => {
     // Unfolded now, so the field is displayed and takes the keyboard before

@@ -212,9 +212,9 @@ cargo build --release --target wasm32-unknown-unknown
 Install `target/wasm32-unknown-unknown/release/shardx_module_example.wasm` from the
 block library, or drop it in the modules directory yourself:
 
-- macOS — `~/Library/Application Support/shardx-launcher/automation-modules/`
-- Windows — `%APPDATA%\shardx-launcher\automation-modules\`
-- Linux — `~/.config/shardx-launcher/automation-modules/`
+- macOS — `~/Library/Application Support/zimibrowser/automation-modules/`
+- Windows — `%APPDATA%\zimibrowser\automation-modules\`
+- Linux — `~/.config/zimibrowser/automation-modules/`
 
 The file's name is the module id, and its blocks are addressed as
 `module:<id>:<block>`. A module that does not load is refused at install time

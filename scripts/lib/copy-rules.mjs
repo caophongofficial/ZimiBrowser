@@ -10,8 +10,8 @@
 /** Capitalized words allowed inside a sentence: the three place names the UI
  *  capitalizes (6.2), the What's new dialog, products, platforms and keys. */
 export const PROPER = new Set([
-  "Trash", "Settings", "Peek", "What’s", "What's",
-  "ShardBrowser", "ProxyShard", "ShardX", "Cloudflare", "Shard", "Helper", "Launcher", "GitHub", "Google", "Chrome", "Chromium", "Web", "Store", "Widevine",
+  "Trash", "Settings", "Peek", "What's", "What’s",
+  "ShardBrowser", "ZimiBrowser", "ProxyShard", "ShardX", "Cloudflare", "Shard", "Helper", "Launcher", "GitHub", "Google", "Chrome", "Chromium", "Web", "Store", "Widevine",
   "Node.js", "README", "PowerShell", "Finder", "Explorer", "Microsoft", "Apple", "Intel", "Edge",
   "macOS", "Windows", "Linux", "Android", "iOS",
   "Cmd", "Ctrl", "Shift", "Alt", "Option", "Enter", "Esc", "Tab", "Space", "Backspace", "Delete", "Home", "End",
@@ -137,6 +137,15 @@ const ZH_RULES = [
   { id: "zh-move-to-folder", test: (z, e) => (/^Move to folder/.test(e) && !z.startsWith("移到文件夹") ? "Move to folder 是 移到文件夹" : null) },
 ];
 
+/** Basic Vietnamese rules: placeholders and rich tags must follow English,
+ *  and the owner's no-middle-dot rule applies to every language. */
+const VI_RULES = [
+  { id: "vars-match", test: (v, e) => (varsOf(v) !== varsOf(e) ? `placeholders differ: en {${varsOf(e)}} vi {${varsOf(v)}}` : null) },
+  { id: "tags-match", test: (v, e) => (tagsOf(v) !== tagsOf(e) ? `tags differ: en <${tagsOf(e)}> vi <${tagsOf(v)}>` : null) },
+  { id: "no-middot", test: (v) => middot(v) },
+  { id: "command-ellipsis", test: (v, _e, key) => commandEllipsis(v, key) },
+];
+
 /** A Russian count's word forms, `{n|файл|файла|файлов}`: one, few and many,
  *  picked by the number in `n` (src/shared/i18n). */
 const pluralsOf = (s) => [...String(s).matchAll(/\{(\w+)\|([^{}]*)\}/g)].map((m) => ({ v: m[1], forms: m[2].split("|") }));
@@ -206,14 +215,14 @@ export function noteTexts(patchlog) {
   return out;
 }
 
-export function copyProblems({ en, zh = {}, ru = {}, notes = [] }) {
+export function copyProblems({ en, vi = {}, zh = {}, ru = {}, notes = [] }) {
   const out = [];
   for (const [key, value] of Object.entries(en)) {
     for (const r of EN_RULES) {
       const m = r.test(String(value), key);
       if (m) out.push({ where: `en:${key}`, rule: r.id, message: m });
     }
-    for (const [lang, dict, list] of [["zh", zh, ZH_RULES], ["ru", ru, RU_RULES]]) {
+    for (const [lang, dict, list] of [["vi", vi, VI_RULES], ["zh", zh, ZH_RULES], ["ru", ru, RU_RULES]]) {
       if (typeof dict[key] !== "string") continue;
       for (const r of list) {
         const m = r.test(dict[key], String(value), key);

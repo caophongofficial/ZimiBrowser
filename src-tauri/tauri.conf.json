@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "ShardBrowser Launcher",
+  "productName": "ZimiBrowser",
   "version": "2.1.6",
-  "identifier": "com.shardx.launcher",
+  "identifier": "com.zimi.browser",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://127.0.0.1:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "ShardBrowser Launcher",
+        "title": "ZimiBrowser",
         "width": 1280,
         "height": 800,
         "minWidth": 1024,
@@ -31,7 +31,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "createUpdaterArtifacts": true,
+    "createUpdaterArtifacts": false,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -44,18 +44,7 @@
     },
     "windows": {
       "wix": {
-        "upgradeCode": "004ac8c7-eb6d-5866-a3d7-d1cfd9d82f3d"
-      }
-    }
-  },
-  "plugins": {
-    "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI5ODAyRDk4RDZDQjkxMDcKUldRSGtjdldtQzJBdVQzaHdJWmdrVzRyUE0yUHNJMExreUZ5cjNpMENwMG9NS3pDcXU0THpwdFcK",
-      "endpoints": [
-        "https://github.com/ProxyShard/ShardBrowser/releases/latest/download/latest.json"
-      ],
-      "windows": {
-        "installMode": "passive"
+        "upgradeCode": "FB95D818-A97C-4D24-81E2-1ADE94F7EB36"
       }
     }
   }

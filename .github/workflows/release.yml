@@ -11,7 +11,7 @@
 # avoids any self-hosted-runner setup.
 #
 # Triggers:
-#   * pushing a tag like `v1.2.3`  → release named "ShardBrowser Launcher v1.2.3"
+#   * pushing a tag like `v1.2.3`  → release named "ZimiBrowser v1.2.3"
 #   * manual dispatch via the Actions tab (handy for ad-hoc builds)
 #
 # Artifacts attached to the Release:
@@ -299,7 +299,7 @@ jobs:
           # cannot silently break the portable build again.
           pkg=$(sed -n 's/^name *= *"\(.*\)"/\1/p' src-tauri/Cargo.toml | head -1)
           src=""
-          for cand in "$rel/ShardBrowser Launcher.exe" "$rel/$pkg.exe"; do
+          for cand in "$rel/ZimiBrowser.exe" "$rel/$pkg.exe"; do
             if [ -f "$cand" ]; then src="$cand"; break; fi
           done
           if [ -z "$src" ]; then
@@ -307,13 +307,13 @@ jobs:
             ls -la "$rel" >&2
             exit 1
           fi
-          cp -v "$src" "staging/ShardBrowser-Launcher-portable-${{ matrix.label }}.exe"
+          cp -v "$src" "staging/ZimiBrowser-portable-${{ matrix.label }}.exe"
           ls -la staging/
 
       - name: Upload to workflow artifacts (intermediate)
         uses: actions/upload-artifact@v4
         with:
-          name: shardbrowser-launcher-${{ matrix.label }}
+          name: zimibrowser-${{ matrix.label }}
           path: staging/*
           if-no-files-found: error
 
@@ -336,7 +336,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: dist
-          pattern: shardbrowser-launcher-*
+          pattern: zimibrowser-*
           merge-multiple: true
 
       - name: List collected bundles
@@ -398,7 +398,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
-          name: ShardBrowser Launcher ${{ steps.tag.outputs.tag }}
+          name: ZimiBrowser ${{ steps.tag.outputs.tag }}
           draft: false
           prerelease: false
           fail_on_unmatched_files: true
@@ -406,7 +406,7 @@ jobs:
           body: |
             ## Install
 
-            * **macOS** (Apple Silicon — M1/M2/M3/M4) — download the `.dmg` and drag *ShardBrowser Launcher.app* to Applications.  The app is signed with an Apple Developer ID and notarized, so it opens like any other app.
+            * **macOS** (Apple Silicon — M1/M2/M3/M4) — download the `.dmg` and drag *ZimiBrowser.app* to Applications.  The app is signed with an Apple Developer ID and notarized, so it opens like any other app.
             * **Windows** — `.msi` installer, or the installer-free **portable** `ShardBrowser-Launcher-portable-win-x64.exe` (just run it — needs the Evergreen WebView2 runtime, preinstalled on Windows 10/11).  SmartScreen will warn: *More info* → *Run anyway* (the build isn't signed with Authenticode).
             * **Linux** — `.AppImage` (`chmod +x` and run) or `.deb` (`sudo apt install ./...deb`).
 

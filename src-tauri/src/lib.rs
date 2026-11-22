@@ -1,4 +1,4 @@
-// ShardBrowser Launcher — Tauri backend.
+// ZimiBrowser — Tauri backend.
 
 mod profile_icon;
 mod platform_version;
@@ -2988,8 +2988,8 @@ pub fn run() {
             {
                 use tauri::menu::{Menu, MenuItem};
                 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-                let show = MenuItem::with_id(app, "tray_show", "Show Launcher", true, None::<&str>)?;
-                let quit = MenuItem::with_id(app, "tray_quit", "Quit", true, None::<&str>)?;
+                let show = MenuItem::with_id(app, "tray_show", "Hiện ZimiBrowser", true, None::<&str>)?;
+                let quit = MenuItem::with_id(app, "tray_quit", "Thoát ZimiBrowser", true, None::<&str>)?;
                 let menu = Menu::with_items(app, &[&show, &quit])?;
                 if let Some(icon) = app.default_window_icon().cloned() {
                     let builder = TrayIconBuilder::with_id("main").icon(icon);
@@ -2999,7 +2999,7 @@ pub fn run() {
                     #[cfg(target_os = "macos")]
                     let builder = builder.icon_as_template(true);
                     builder
-                        .tooltip("ShardBrowser Launcher")
+                        .tooltip("ZimiBrowser")
                         .menu(&menu)
                         // macOS opens the menu on any click (the tray library keeps it attached),
                         // as menu bar extras do there; elsewhere a left click shows the window.

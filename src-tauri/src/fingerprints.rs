@@ -1,7 +1,7 @@
 // User-managed Fingerprint Library.
 //
 // Each entry is a full FingerprintConfig JSON stored under
-// `$CONFIG/shardx-launcher/fingerprints/<id>.json`.  The GPU select in
+// `$CONFIG/zimibrowser/fingerprints/<id>.json`.  The GPU select in
 // the profile editor pulls its options from here — i.e. the user can
 // curate which GPUs/devices show up by importing their own JSON files
 // (or by deleting bundled ones).
@@ -64,7 +64,7 @@ fn tag_color_for(platform: &str) -> String {
 
 pub fn list_all() -> Result<Vec<LibraryEntry>> {
     // Pure filesystem read.  Everything in
-    //   $CONFIG/shardx-launcher/fingerprints/*.json
+    //   $CONFIG/zimibrowser/fingerprints/*.json
     // becomes a library entry, no matter how it got there — UI
     // imports, drag-and-drop, or the user dumping files in by hand.
     // No bundled set, no compile-time tables, no "builtin" concept.

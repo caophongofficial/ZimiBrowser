@@ -175,7 +175,7 @@ export async function send(
     npa: "1",
     en: name,
     dl: section ? `${APP_URL}${section}` : APP_URL,
-    dt: section ? `ShardBrowser Launcher — ${section}` : "ShardBrowser Launcher",
+    dt: section ? `ZimiBrowser — ${section}` : "ZimiBrowser",
     ul: (navigator.language || "en").toLowerCase(),
     sr: `${screen.width}x${screen.height}`,
     "ep.app_version": version,

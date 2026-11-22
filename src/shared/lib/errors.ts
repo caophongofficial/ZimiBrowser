@@ -176,7 +176,7 @@ export function explainError(e: unknown): string | undefined {
   const room = /\bnot enough free disk space (?:for the update|to unpack it): it needs (?:about )?(\d+) MB,? (?:and )?(\d+) MB is free\b/i.exec(raw);
   if (room) return t("errors.diskSpace", { need: fmtBytes(Number(room[1]) * 2 ** 20), free: fmtBytes(Number(room[2]) * 2 ** 20) });
   // runtime.rs runtime_install, refused for the launcher's version.
-  const old = /\bneeds ShardBrowser Launcher (\S+) or newer\b.*?\byou are on (\S+?)\.(?:\s|$)/i.exec(raw);
+  const old = /\bneeds ZimiBrowser (\S+) or newer\b.*?\byou are on (\S+?)\.(?:\s|$)/i.exec(raw);
   if (old) return t("errors.engineNeedsLauncher", { need: old[1], have: old[2] });
   for (const [re, key] of KNOWN) if (re.test(raw)) return t(key);
   return raw;

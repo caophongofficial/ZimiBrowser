@@ -1,7 +1,8 @@
 {
-  "name": "shardx-launcher",
+  "name": "zimibrowser",
   "private": true,
   "version": "2.1.6",
+  "description": "ZimiBrowser — bản Việt hóa của ShardBrowser Launcher",
   "type": "module",
   "scripts": {
     "dev": "vite",

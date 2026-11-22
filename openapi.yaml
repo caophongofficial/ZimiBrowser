@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  title: ShardBrowser Launcher — Automation API
+  title: ZimiBrowser — Automation API
   version: "0.1.0"
   description: |
     Local HTTP API for automating the ShardBrowser anti-detect browser launcher:
@@ -70,7 +70,7 @@ info:
     not hosted by it. Get it from the launcher (**Settings → MCP server →
     Download MCP server**, or the sidebar "Download MCP" button), which
     saves the source to a folder you choose; or from the repo at
-    `rust/shardx-launcher/mcp/`.
+    `rust/zimibrowser/mcp/`.
 
     Under the hood it just calls this API: configure it with
     `SHARDX_API` (this base URL) and `SHARDX_TOKEN` (the Bearer token from
@@ -123,7 +123,7 @@ paths:
                 type: object
                 properties:
                   ok: { type: boolean, example: true }
-                  name: { type: string, example: shardx-launcher }
+                  name: { type: string, example: zimibrowser }
                   version: { type: string, example: "0.1.0" }
 
   /fingerprint/new:

@@ -31,7 +31,7 @@ test("us-spelling and banned words", () => {
   assert.deepEqual(rules({ "a.b": "the patched core" }), ["en:a.b banned-word"]);
   assert.deepEqual(rules({ "a.b": "This machine can run it." }), ["en:a.b banned-word"]);
   assert.deepEqual(rules({ "a.b": "the automation API stays up" }), ["en:a.b banned-word"]);
-  assert.deepEqual(rules({ "a.b": "ShardBrowser Launcher settings, CPU cores" }), []);
+  assert.deepEqual(rules({ "a.b": "ZimiBrowser settings, CPU cores" }), []);
 });
 
 test("quotes, dots, glyphs, counts, plurals, raw errors and Learn more", () => {

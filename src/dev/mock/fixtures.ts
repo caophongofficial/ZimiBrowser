@@ -12,6 +12,7 @@ import type { ProfileSync } from "../../entities/sync/model/types";
 import type { ProfileMeta } from "../../entities/profile/model/types";
 import type { ProxyEntry, ProxyTestSnapshot } from "../../entities/proxy/model/types";
 import type { FingerprintEntry } from "../../entities/fingerprint/model/types";
+import { ZIMI_FINGERPRINTS } from "./zimiFingerprints";
 import type { ExtensionEntry, ExtensionUpdate } from "../../entities/extension/model/types";
 import type { Bookmark } from "../../entities/bookmark/model/types";
 import type { TrashEntry } from "../../entities/trash/model/types";
@@ -20,7 +21,7 @@ import type { ModuleInfo, Project } from "../../entities/automation/model/types"
 import type { PsOrder, PsProduct, PsActiveProxy } from "../../entities/proxyshard/model/types";
 
 /** Bump when the seed changes shape so stale localStorage state is dropped. */
-export const SEED_VERSION = 7;
+export const SEED_VERSION = 8;
 
 export const DEFAULT_BLOCKED_PORTS = [3389, 5900, 5901, 5800, 7070, 6568, 5938, 1080, 8080, 3128, 3030];
 
@@ -156,61 +157,8 @@ const unix = (daysAgo: number) => Math.floor(Date.now() / 1000) - daysAgo * 8640
 const stamp = (daysAgo: number, hour = 10) => `@${Math.floor(Date.parse(iso(daysAgo, hour)) / 1000)}`;
 
 // ---- Fingerprints -----------------------------------------------------------
-
-type FpSeed = {
-  id: string;
-  label: string;
-  platform: string;
-  chrome: string;
-  gpu: string;
-  tag_color: string;
-  ua: string;
-  cores: number;
-  memory: number;
-  screen: [number, number, number, number];
-  platform_version: string;
-};
-
-const FP: FpSeed[] = [
-  { id: "mac-m3-pro", label: "macOS 15, Apple M3 Pro", platform: "macOS", chrome: "152.0.7977.65", gpu: "Apple M3 Pro", tag_color: "#8b5cf6", ua: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", cores: 12, memory: 8, screen: [1728, 1117, 1728, 1079], platform_version: "15.4.1" },
-  { id: "mac-m1", label: "macOS 14, Apple M1", platform: "macOS", chrome: "152.0.7977.65", gpu: "Apple M1", tag_color: "#8b5cf6", ua: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", cores: 8, memory: 8, screen: [1440, 900, 1440, 862], platform_version: "14.6.1" },
-  { id: "mac-intel-iris", label: "macOS 13, Intel Iris Plus 655", platform: "macOS", chrome: "152.0.7977.65", gpu: "Intel Iris Plus Graphics 655", tag_color: "#8b5cf6", ua: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", cores: 8, memory: 8, screen: [2560, 1600, 2560, 1575], platform_version: "13.7.2" },
-  { id: "win11-rtx4070", label: "Windows 11, NVIDIA RTX 4070", platform: "Windows", chrome: "152.0.7977.65", gpu: "NVIDIA GeForce RTX 4070", tag_color: "#3b82f6", ua: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", cores: 16, memory: 8, screen: [2560, 1440, 2560, 1392], platform_version: "15.0.0" },
-  { id: "win11-rtx3060", label: "Windows 11, NVIDIA RTX 3060", platform: "Windows", chrome: "152.0.7977.65", gpu: "NVIDIA GeForce RTX 3060", tag_color: "#3b82f6", ua: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", cores: 12, memory: 8, screen: [1920, 1080, 1920, 1032], platform_version: "15.0.0" },
-  { id: "win10-uhd630", label: "Windows 10, Intel UHD 630", platform: "Windows", chrome: "152.0.7977.65", gpu: "Intel(R) UHD Graphics 630", tag_color: "#3b82f6", ua: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", cores: 8, memory: 8, screen: [1920, 1080, 1920, 1040], platform_version: "10.0.0" },
-  { id: "win10-rx6600", label: "Windows 10, AMD RX 6600", platform: "Windows", chrome: "152.0.7977.65", gpu: "AMD Radeon RX 6600", tag_color: "#3b82f6", ua: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", cores: 6, memory: 8, screen: [1920, 1080, 1920, 1040], platform_version: "10.0.0" },
-  { id: "win11-arc-a770", label: "Windows 11, Intel Arc A770", platform: "Windows", chrome: "152.0.7977.65", gpu: "Intel(R) Arc(TM) A770 Graphics", tag_color: "#3b82f6", ua: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", cores: 20, memory: 8, screen: [3440, 1440, 3440, 1392], platform_version: "15.0.0" },
-  { id: "linux-mesa-intel", label: "Ubuntu 24.04, Mesa Intel Xe", platform: "Linux", chrome: "152.0.7977.65", gpu: "Mesa Intel(R) Xe Graphics (TGL GT2)", tag_color: "#f59e0b", ua: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", cores: 8, memory: 8, screen: [1920, 1080, 1920, 1053], platform_version: "6.8.0" },
-  { id: "linux-nvidia-1660", label: "Fedora 40, NVIDIA GTX 1660", platform: "Linux", chrome: "152.0.7977.65", gpu: "NVIDIA GeForce GTX 1660/PCIe/SSE2", tag_color: "#f59e0b", ua: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36", cores: 6, memory: 8, screen: [2560, 1440, 2560, 1413], platform_version: "6.9.0" },
-  { id: "android-pixel-8", label: "Android 15, Pixel 8, Mali-G715", platform: "Linux armv8l", chrome: "152.0.7977.65", gpu: "Mali-G715-Immortalis MC10", tag_color: "#10b981", ua: "Mozilla/5.0 (Linux; Android 15; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Mobile Safari/537.36", cores: 9, memory: 8, screen: [412, 915, 412, 915], platform_version: "15.0.0" },
-  { id: "android-s24", label: "Android 14, Galaxy S24, Adreno 750", platform: "Linux armv8l", chrome: "152.0.7977.65", gpu: "Adreno (TM) 750", tag_color: "#10b981", ua: "Mozilla/5.0 (Linux; Android 14; SM-S921B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Mobile Safari/537.36", cores: 8, memory: 8, screen: [360, 780, 360, 780], platform_version: "14.0.0" },
-];
-
-function fingerprint(s: FpSeed): FingerprintEntry {
-  const [width, height, avail_width, avail_height] = s.screen;
-  return {
-    id: s.id,
-    label: s.label,
-    platform: s.platform,
-    chrome: s.chrome,
-    gpu: s.gpu,
-    tag_color: s.tag_color,
-    builtin: true,
-    payload: {
-      navigator: {
-        user_agent: s.ua,
-        platform: s.platform,
-        hardware_concurrency: s.cores,
-        device_memory: s.memory,
-        language: "en-US",
-        platform_version: s.platform_version,
-      },
-      client_hints: { platform_version: s.platform_version },
-      screen: { width, height, avail_width, avail_height, color_depth: 24, device_pixel_ratio: 2, refresh_rate: 60 },
-      webgl: { vendor: "Google Inc.", renderer: `ANGLE (${s.gpu})` },
-    },
-  };
-}
+// The 220-entry library is generated from ShardX-Fingerprints.zip in
+// `zimiFingerprints.ts` and used in `seed()` below.
 
 // ---- Profiles ---------------------------------------------------------------
 
@@ -576,7 +524,7 @@ function extraProfiles(): ProfileSeed[] {
     const i = k + 1;
     return {
       id: `bulk-${i}`, name: `Profile ${String(i).padStart(4, "0")}`, notes: "", folder: "",
-      fp: FP[i % FP.length].id, proxy: null, createdDaysAgo: i % 90,
+      fp: ZIMI_FINGERPRINTS[i % ZIMI_FINGERPRINTS.length].id, proxy: null, createdDaysAgo: i % 90,
       launchedDaysAgo: i % 7 === 0 ? null : i % 30, runtimeHours: i % 40,
     };
   });
@@ -594,7 +542,7 @@ function extraFolderProfiles(): ProfileSeed[] {
     const two = String(k + 1).padStart(2, "0");
     return {
       id: `folder-${two}`, name: `Folder profile ${two}`, notes: "", folder: `Folder ${two}`,
-      fp: FP[(k + 1) % FP.length].id, proxy: null, pinned: k < pinned,
+      fp: ZIMI_FINGERPRINTS[(k + 1) % ZIMI_FINGERPRINTS.length].id, proxy: null, pinned: k < pinned,
       createdDaysAgo: k + 1, launchedDaysAgo: null, runtimeHours: 0,
     };
   });
@@ -618,7 +566,7 @@ function statusProbes(): ProfileSeed[] {
     ["probe-other-year", "Status probe other year", 370 * DAY],
   ];
   return seeds.map(([id, name, launchedMsAgo]) => ({
-    id, name, notes: "", folder: "", fp: FP[0].id, proxy: null,
+    id, name, notes: "", folder: "", fp: ZIMI_FINGERPRINTS[0].id, proxy: null,
     createdDaysAgo: 1, launchedDaysAgo: null, launchedMsAgo, runtimeHours: 0,
   }));
 }
@@ -662,7 +610,10 @@ function extraTrash(): TrashEntry[] {
 const emptyInstall = () => !!(window as { __shardxMockEmpty?: boolean }).__shardxMockEmpty;
 
 export function seed(): MockState {
-  const library = FP.map(fingerprint);
+  // The preview shows the same 220-entry library the packaged app seeds from
+  // ShardX-Fingerprints.zip. The old handmade IDs stay as aliases so the seed
+  // profiles keep their original device links.
+  const library = ZIMI_FINGERPRINTS;
   // `window.__shardxMockNoFingerprints = true`, set before load: an empty
   // fingerprint library (the empty state of the Fingerprints page). Profiles
   // still seed from the whole set, so they keep their stored fingerprints.

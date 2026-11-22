@@ -1,0 +1,17 @@
+ZimiBrowser
+============
+
+Bản Việt hóa/rebrand của ShardBrowser Launcher.
+
+Nguồn gốc:
+  ShardBrowser — https://github.com/ProxyShard/ShardBrowser
+  Copyright (c) 2026 ShardBrowser
+  Giấy phép: MIT (xem LICENSE)
+
+Các thay đổi trong ZimiBrowser:
+  - Việt hóa giao diện và tài liệu.
+  - Đổi tên sản phẩm, identifier, icon, website và thư mục dữ liệu.
+  - Đóng gói engine + 220 fingerprint vào ứng dụng để chạy offline.
+  - Tắt tự kiểm tra cập nhật nền; cập nhật bằng bộ cài mới.
+
+ZimiBrowser không phải sản phẩm chính thức của ShardBrowser, ShardX hay ProxyShard.

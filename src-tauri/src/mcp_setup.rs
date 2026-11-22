@@ -1,7 +1,7 @@
 // Download the MCP server source from our R2 CDN into a user-chosen
 // folder.  The app does NOT run or manage it — the user installs deps
 // + registers it with their MCP client themselves (see
-// rust/shardx-launcher/mcp/README.md).
+// rust/zimibrowser/mcp/README.md).
 //
 // The bundle ships pre-packed at ~12 KB (just index.js + package.json
 // + README.md), so the download is instant and contains no

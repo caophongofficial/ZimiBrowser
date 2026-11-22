@@ -1,4 +1,4 @@
-// Local automation HTTP API (axum) for ShardBrowser Launcher.
+// Local automation HTTP API (axum) for ZimiBrowser.
 // 127.0.0.1:<api_port>; every endpoint except /health requires Bearer JWT (HS256).
 
 use std::sync::{OnceLock, RwLock};
@@ -188,7 +188,7 @@ async fn auth(req: Request, next: Next) -> Result<Response, StatusCode> {
 async fn health() -> Json<Value> {
     Json(json!({
         "ok": true,
-        "name": "shardx-launcher",
+        "name": "zimibrowser",
         "version": env!("CARGO_PKG_VERSION"),
     }))
 }

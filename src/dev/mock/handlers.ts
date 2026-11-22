@@ -353,7 +353,7 @@ function resetPlan(state: MockState) {
   const stamp = new Date().toISOString().slice(0, 19).replace("T", "-").replace(/:/g, "");
   return {
     id: `${stamp}.${Object.values(counts).join("-")}`,
-    backups: [`${DATA_ROOT.replace(/\/[^/]+$/, "")}/shardx-launcher-backup-${stamp}`],
+    backups: [`${DATA_ROOT.replace(/\/[^/]+$/, "")}/zimibrowser-backup-${stamp}`],
     counts,
     total_bytes: counts.profiles * 48 * 1024 * 1024 + counts.extensions * 1_200_000,
     entries: [`${DATA_ROOT}/profiles`, `${DATA_ROOT}/settings.json`],
@@ -383,7 +383,7 @@ export const handlers: Record<string, Handler> = {
     return {
       installed: engineInstalled(), binary_path: `${DATA_ROOT}/engine/ShardX.app`, installed_browser_etag: engineDownloaded ? remoteEtag() : "e2f22d25", remote_browser_etag: remoteEtag(),
       update_available, spec: { browser: { key: "ShardX-Mac-arm64.zip", label: "macOS (Apple Silicon)" } },
-      fingerprints_installed: engineInstalled(), needs_newer_launcher: false, min_launcher_version: "2.0.1", launcher_version: "2.0.3",
+      fingerprints_installed: engineInstalled(), needs_newer_launcher: false, min_launcher_version: "2.0.1", launcher_version: "2.1.6",
       install_error: update_available || !engineInstalled() ? lastEngineError() : null,
       update_staged: update_available && engineIsStaged(),
     };
@@ -438,7 +438,7 @@ export const handlers: Record<string, Handler> = {
     ctx.emit("runtime:done");
     return handlers.runtime_status({}, ctx);
   },
-  launcher_update_check: () => ({ current: "2.0.3", latest: "2.0.3", update_available: false, release_url: "https://github.com/ProxyShard/ShardBrowser/releases/latest" }),
+  launcher_update_check: () => ({ current: "2.1.6", latest: "2.1.6", update_available: false, release_url: "https://github.com/caophongofficial/ZimiBrowser/releases/latest" }),
   // `window.__shardxMockLauncherOffer = { current, version, installable, release_url }` stands in for a newer
   // launcher; the download counts up, and Apply leaves `window.__shardxMockLauncherApplied` set.
   launcher_update_offer: () => (window as { __shardxMockLauncherOffer?: unknown }).__shardxMockLauncherOffer ?? null,
@@ -1261,8 +1261,8 @@ export const handlers: Record<string, Handler> = {
   automation_display: () => ({ server: hostPlatform() === "macOS" ? "quartz" : "x11", limited: false, note: "", browser_placement: true, panels: true }),
 
   // ---- Tauri plugins ------------------------------------------------------------
-  "plugin:app|version": () => "2.0.3",
-  "plugin:app|name": () => "ShardBrowser Launcher",
+  "plugin:app|version": () => "2.1.6",
+  "plugin:app|name": () => "ZimiBrowser",
   "plugin:app|tauri_version": () => "2.5.0",
   "plugin:dialog|open": ({ options }) => {
     const o = options ?? {};

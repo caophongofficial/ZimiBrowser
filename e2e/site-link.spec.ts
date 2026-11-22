@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { openApp, reloadApp } from "./support/app";
 
 // The product site: Settings → About and the palette link to it, each with its own utm_content.
-const SITE = "https://shardbrowser.com/?utm_source=launcher&utm_medium=app&utm_campaign=shardbrowser&utm_content=";
+const SITE = "https://github.com/caophongofficial/ZimiBrowser?utm_source=zimibrowser&utm_medium=app&utm_campaign=zimibrowser&utm_content=";
 type Mock = { __shardxMock: { log: { cmd: string; args: Record<string, unknown> }[] } };
 const opened = (page: Page) => page.evaluate(() =>
   (window as unknown as Mock).__shardxMock.log.filter((l) => l.cmd === "plugin:opener|open_url").map((l) => l.args.url));
@@ -13,24 +13,24 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => { window.open = () => null; });
 });
 
-test("About has a Website row whose link opens shardbrowser.com in the system browser", async ({ page }) => {
+test("About has a Website row whose link opens ZimiBrowser on GitHub in the system browser", async ({ page }) => {
   await openApp(page, { section: "settings" });
   await page.getByRole("tab", { name: "About" }).click();
   const row = page.locator("[data-details='about'] [data-detail='website']");
   await expect(row).toContainText("Website");
-  const link = row.getByRole("link", { name: "shardbrowser.com", exact: true });
+  const link = row.getByRole("link", { name: "github.com/caophongofficial/ZimiBrowser", exact: true });
   await expect(link).toHaveAttribute("href", `${SITE}settings_about`);
   await link.click();
   await expect.poll(() => opened(page)).toEqual([`${SITE}settings_about`]);
   // Opened outside, not in the launcher's own window.
-  expect(new URL(page.url()).host).not.toBe("shardbrowser.com");
+  expect(new URL(page.url()).host).not.toBe("github.com");
 });
 
-test("the palette opens shardbrowser.com, found by “website”", async ({ page }) => {
+test("the palette opens ZimiBrowser on GitHub, found by “website”", async ({ page }) => {
   await openApp(page);
   await page.keyboard.press("ControlOrMeta+k");
   await palette(page).getByRole("combobox", { name: "Search commands" }).fill("website");
-  await palette(page).getByRole("option", { name: /^Open shardbrowser\.com/ }).click();
+  await palette(page).getByRole("option", { name: /^Open github\.com\/caophongofficial\/ZimiBrowser/ }).click();
   await expect(palette(page)).toHaveCount(0);
   await expect.poll(() => opened(page)).toEqual([`${SITE}palette`]);
 });
@@ -43,5 +43,5 @@ test("in Russian the row is Сайт and the palette finds the site by «сай�
   await expect(page.locator("[data-details='about'] [data-detail='website']")).toContainText("Сайт");
   await page.keyboard.press("ControlOrMeta+k");
   await page.getByRole("dialog").getByRole("combobox").fill("сайт");
-  await expect(page.getByRole("dialog").getByRole("option", { name: /^Открыть сайт shardbrowser\.com/ })).toBeVisible();
+  await expect(page.getByRole("dialog").getByRole("option", { name: /^Открыть сайт github\.com\/caophongofficial\/ZimiBrowser/ })).toBeVisible();
 });

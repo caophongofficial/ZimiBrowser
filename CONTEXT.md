@@ -1,4 +1,4 @@
-# ShardBrowser Launcher
+# ZimiBrowser
 
 Desktop app for managing anti-detect browser identities: creating them, binding proxies, editing fingerprints and launching them in the patched engine.
 
@@ -13,7 +13,7 @@ One live Engine process running a Profile. Starting a Profile opens a Session; s
 _Avoid_: Browser, instance, window
 
 **Engine**:
-The patched Chromium build that ShardBrowser downloads and launches Profiles in.
+The patched Chromium build that ZimiBrowser downloads and launches Profiles in.
 _Avoid_: Browser, Chrome, core
 
 ## Organizing Profiles
@@ -63,7 +63,7 @@ _Avoid_: Duplicate, clone
 How the glossary reaches the screen. The lines marked *checked* have a rule in `scripts/lib/copy-rules.mjs`, run by `npm run check:i18n`.
 
 - **Case.** Sentence case in every string: buttons, menu items, titles, Cmd+K commands. Glossary nouns are common nouns in running text ("Save as view", "Move to folder", "All profiles", "3 profiles"). Three places keep a capital because the screen names them that way: **Trash**, **Settings**, **Peek**. *Checked.*
-- **Browser and browser engine.** "Browser" is the window a Profile opens ("Open the browser"). "Browser engine" is what ShardBrowser downloads and updates (the Engine above). Never "core". *Checked.*
+- **Browser and browser engine.** "Browser" is the window a Profile opens ("Open the browser"). "Browser engine" is what ZimiBrowser downloads and updates (the Engine above). Never "core". *Checked.*
 - **Fingerprint.** Always "fingerprint", never "template" ("Fingerprint", "Pick a library fingerprint"). "Template" names a Profile template only, in its own keys (`templates.*`). *Checked.*
 - **This computer.** The user's own machine is "this computer" and its screen "this computer's screen"; never "this machine", "your machine" or "the host". *Checked.*
 - **Local API.** The local HTTP API is the "Local API", so it doesn't clash with the Automation page (Projects). *Checked.*

@@ -15,8 +15,8 @@ import {
   NavTrashIcon,
   RouteIcon,
   SearchIcon,
-  ShardLogo,
-  ShardMini,
+  ZimiLogo,
+  ZimiMini,
   SidebarIcon,
   SpacePersonalIcon,
   SpaceTeamIcon,
@@ -895,7 +895,7 @@ function VersionItem({ compact }: { compact: boolean }) {
       size="small"
       // The app fetches What's new's code ahead when this is reached (App.tsx).
       data-nav="whats-new"
-      icon={<span className="brand-mark flex"><ShardMini /></span>}
+      icon={<span className="brand-mark flex"><ZimiMini /></span>}
       label={t("sidebar.launcherVersion", { v: info?.current ?? "…" })}
       collapsed={compact}
       onClick={() => openWhatsNew(true)}
@@ -1010,8 +1010,8 @@ export function Sidebar() {
       >
         {!compact && (
           <span data-brand className="flex items-center gap-2 text-ui font-bold text-text-strong-950">
-            <span className="brand-mark"><ShardLogo /></span>
-            <span>ShardBrowser</span>
+            <span className="brand-mark"><ZimiLogo /></span>
+            <span>ZimiBrowser</span>
           </span>
         )}
         {/* Not a Tab stop: the sidebar is one (A11Y-14), and this has its

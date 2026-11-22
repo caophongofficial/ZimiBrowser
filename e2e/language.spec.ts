@@ -82,9 +82,9 @@ test("dates stored as ISO text are formatted too", async ({ page }) => {
 
 test("the window title names the page", async ({ page }) => {
   await openApp(page);
-  await expect(page).toHaveTitle("All profiles – ShardBrowser");
+  await expect(page).toHaveTitle("All profiles – ZimiBrowser");
   await page.locator("aside [data-nav='proxies']").click();
-  await expect(page).toHaveTitle("Proxies – ShardBrowser");
+  await expect(page).toHaveTitle("Proxies – ZimiBrowser");
 });
 
 test("kit defaults speak the UI language", async ({ page }) => {

@@ -23,7 +23,7 @@ const PUB_BASE: &str = "https://pub-e57a7c60f6934eb09a6600bf2fc59cdc.r2.dev";
 /// Version manifest (GitHub raw) — one tiny GET yields every archive's current
 /// etag, so install/status checks never poll R2/S3 per-archive.
 const MANIFEST_URL: &str =
-    "https://raw.githubusercontent.com/ProxyShard/ShardBrowser/main/runtime.json";
+    "https://raw.githubusercontent.com/caophongofficial/ZimiBrowser/main/runtime.json";
 /// Whole-request budget for that GET. The window's first paint waits on
 /// `runtime_status`, so being offline has to mean a quick "no manifest" instead
 /// of a request the OS lets hang — a network that accepts the connection and
@@ -31,7 +31,7 @@ const MANIFEST_URL: &str =
 /// Kept short on purpose: giving up early only costs this launch its update
 /// check, while waiting costs the operator a launcher that looks stuck.
 const MANIFEST_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(4);
-const LAUNCHER_RELEASE_REPO: &str = "ProxyShard/ShardBrowser";
+const LAUNCHER_RELEASE_REPO: &str = "caophongofficial/ZimiBrowser";
 /// Chromium version baked into the current bundle (used for Mac Framework path).
 pub const CHROMIUM_VERSION: &str = "158.0.8127.36";
 
@@ -81,7 +81,7 @@ pub fn runtime_dir() -> Result<PathBuf> {
     #[allow(unreachable_code)]
     Ok(dirs::data_dir()
         .context("platform data dir not available")?
-        .join("shardx-launcher")
+        .join("zimibrowser")
         .join("runtime"))
 }
 
@@ -121,6 +121,14 @@ fn engine_root_dir() -> &'static str {
 // Bundled fingerprint library (cross-platform); seeds fingerprints dir on first run.
 const FINGERPRINTS_ARCHIVE_KEY: &str = "ShardX-Fingerprints.zip";
 const FINGERPRINTS_TOP_DIR: &str = "shardx-fingerprints";
+// The same archive the release ships, embedded so the seed never needs CDN.
+// Everything after this point is the original unzip + library import path.
+const BUNDLED_FINGERPRINTS: &[u8] = include_bytes!("../bundled/ShardX-Fingerprints.zip");
+// Offline build: the Windows engine and its release manifest travel inside
+// the launcher. The install/extract/verify/swap path below is unchanged.
+const BUNDLED_ENGINE: &[u8] = include_bytes!("../bundled/ShardX-Windows.zip");
+const BUNDLED_ENGINE_ETAG: &str = "412509d0526aed347fd25c8e639f8030-25";
+const BUNDLED_MANIFEST: &str = include_str!("../bundled/runtime.json");
 
 /// An engine descriptor profiles are migrated to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
@@ -455,13 +463,51 @@ struct RemoteManifest {
     desktop_chromium_versions: Option<DesktopVersions>,
 }
 
-/// Fetch the version manifest (GitHub raw) — one request yielding every
-/// archive's current etag + the chromium version, so install/status never poll
-/// R2/S3 per-archive. Empty when unreachable, refusing, or out of budget — all
-/// three answer "no manifest", never an error, because `runtime_status` renders
-/// the interface behind this call.
+/// Read the release manifest embedded in an offline build. The fallback to the
+/// GitHub raw URL stays for a build that omitted the resource; the normal
+/// offline app never makes that request.
 async fn fetch_manifest() -> RemoteManifest {
+    if let Ok(v) = serde_json::from_str::<serde_json::Value>(BUNDLED_MANIFEST) {
+        return manifest_from_value(&v);
+    }
     fetch_manifest_at(MANIFEST_URL, MANIFEST_TIMEOUT).await
+}
+
+fn manifest_from_value(v: &serde_json::Value) -> RemoteManifest {
+    let archives = v
+        .get("archives")
+        .and_then(|a| a.as_object())
+        .map(|o| {
+            o.iter()
+                .filter_map(|(k, val)| val.as_str().map(|s| (k.clone(), s.to_string())))
+                .collect()
+        })
+        .unwrap_or_default();
+    let str_field = |k: &str| v.get(k).and_then(|s| s.as_str()).map(String::from);
+    RemoteManifest {
+        archives,
+        chromium_version: str_field("chromium_version"),
+        grease_brand: str_field("grease_brand"),
+        grease_version: str_field("grease_version"),
+        android_chromium_version: str_field("android_chromium_version"),
+        desktop_chromium_versions: v
+            .get("desktop_chromium_versions")
+            .and_then(|m| m.as_object())
+            .map(|o| {
+                o.iter()
+                    .filter_map(|(k, val)| val.as_str().map(|s| (k.clone(), s.to_string())))
+                    .collect::<DesktopVersions>()
+            })
+            .filter(|m| !m.is_empty()),
+        tls: v.get("tls").filter(|t| t.is_object()).cloned(),
+        // Written as a number or a string; both mean the same thing.
+        engine_build: v.get("engine_build").and_then(|b| match b {
+            serde_json::Value::String(s) => Some(s.clone()),
+            serde_json::Value::Number(n) => Some(n.to_string()),
+            _ => None,
+        }),
+        min_launcher_version: str_field("min_launcher_version"),
+    }
 }
 
 /// The fetch itself, address and budget passed in so a test can aim it at a
@@ -475,40 +521,7 @@ async fn fetch_manifest_at(url: &str, budget: std::time::Duration) -> RemoteMani
             return None;
         }
         let v: serde_json::Value = resp.json().await.ok()?;
-        let archives = v
-            .get("archives")
-            .and_then(|a| a.as_object())
-            .map(|o| {
-                o.iter()
-                    .filter_map(|(k, val)| val.as_str().map(|s| (k.clone(), s.to_string())))
-                    .collect()
-            })
-            .unwrap_or_default();
-        let str_field = |k: &str| v.get(k).and_then(|s| s.as_str()).map(String::from);
-        Some(RemoteManifest {
-            archives,
-            chromium_version: str_field("chromium_version"),
-            grease_brand: str_field("grease_brand"),
-            grease_version: str_field("grease_version"),
-            android_chromium_version: str_field("android_chromium_version"),
-            desktop_chromium_versions: v
-                .get("desktop_chromium_versions")
-                .and_then(|m| m.as_object())
-                .map(|o| {
-                    o.iter()
-                        .filter_map(|(k, val)| val.as_str().map(|s| (k.clone(), s.to_string())))
-                        .collect::<DesktopVersions>()
-                })
-                .filter(|m| !m.is_empty()),
-            tls: v.get("tls").filter(|t| t.is_object()).cloned(),
-            // Written as a number or a string; both mean the same thing.
-            engine_build: v.get("engine_build").and_then(|b| match b {
-                serde_json::Value::String(s) => Some(s.clone()),
-                serde_json::Value::Number(n) => Some(n.to_string()),
-                _ => None,
-            }),
-            min_launcher_version: str_field("min_launcher_version"),
-        })
+        Some(manifest_from_value(&v))
     }
     inner(url, budget).await.unwrap_or_default()
 }
@@ -1736,7 +1749,7 @@ pub async fn runtime_install(window: Window, force: bool) -> Result<RuntimeStatu
     // Refused rather than installed: this build could not configure it.
     if engine_needs_newer_launcher(&manifest) {
         return Err(format!(
-            "This engine build needs ShardBrowser Launcher {} or newer — you are on {}. Update the launcher first.",
+            "This engine build needs ZimiBrowser {} or newer — you are on {}. Update the launcher first.",
             manifest.min_launcher_version.as_deref().unwrap_or("?"),
             launcher_version(),
         ));
@@ -2035,7 +2048,15 @@ async fn install_fingerprints(
     let _ = fs::remove_dir_all(&staging);
     fs::create_dir_all(&staging)?;
     let zip = staging.join(format!("{}.part", spec.key));
-    let etag = fetch(window, &spec, &zip, |_| Ok(())).await?;
+    // The library travels inside the launcher: no download, same archive table
+    // and same extractor the release uses. The etag stays tied to the release
+    // manifest, so a later remote change is still noticed (and then seeded
+    // again from the embedded copy, never fetched).
+    fs::write(&zip, BUNDLED_FINGERPRINTS)?;
+    let etag = remote_etag
+        .map(str::to_string)
+        .or_else(|| local_etag.map(str::to_string))
+        .unwrap_or_else(|| FINGERPRINTS_ARCHIVE_KEY.to_string());
     progress(window, &spec, "extract", 0, 0, 100);
     let (z, s) = (zip.clone(), staging.clone());
     tokio::task::spawn_blocking(move || swap::unzip(&z, &s)).await??;
@@ -2076,6 +2097,16 @@ async fn fetch(
     part: &Path,
     room: impl Fn(u64) -> Result<(), swap::Failure>,
 ) -> Result<String> {
+    // Offline build: the engine archive is inside the launcher. This is the
+    // only difference from the release; staging, verifying and swapping are
+    // the original code below.
+    if spec.key == "ShardX-Windows.zip" {
+        let total = BUNDLED_ENGINE.len() as u64;
+        room(total)?;
+        tokio::fs::write(part, BUNDLED_ENGINE).await?;
+        progress(window, spec, "download", total, total, 100);
+        return Ok(BUNDLED_ENGINE_ETAG.to_string());
+    }
     let url = format!("{PUB_BASE}/{}", spec.key);
     let mut resp = reqwest::Client::new().get(&url).send().await?.error_for_status()?;
     let total = resp.content_length().unwrap_or(0);
@@ -2183,7 +2214,7 @@ pub async fn launcher_update_check(app: tauri::AppHandle) -> Result<LauncherVers
 
     let url = format!("https://api.github.com/repos/{LAUNCHER_RELEASE_REPO}/releases/latest");
     let client = match reqwest::Client::builder()
-        .user_agent(format!("shardx-launcher/{current}"))
+        .user_agent(format!("zimibrowser/{current}"))
         .build()
     {
         Ok(c) => c,

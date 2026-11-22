@@ -3,8 +3,8 @@
 
 fn main() {
     // `--reap <ppid> <dir>`: the guard of a team profile, not the app.
-    if let Some(code) = shardbrowser_launcher_lib::reap_if_asked() {
+    if let Some(code) = zimibrowser_lib::reap_if_asked() {
         std::process::exit(code);
     }
-    shardbrowser_launcher_lib::run()
+    zimibrowser_lib::run()
 }

@@ -8,7 +8,7 @@ const offer = (installable: boolean) => ({
   current: "2.0.3",
   version: "2.1.7",
   installable,
-  release_url: "https://github.com/ProxyShard/ShardBrowser/releases/tag/v2.1.7",
+  release_url: "https://github.com/caophongofficial/ZimiBrowser/releases/tag/v2.1.7",
 });
 
 async function withOffer(page: Page, installable: boolean) {
@@ -18,8 +18,8 @@ async function withOffer(page: Page, installable: boolean) {
   await openApp(page);
 }
 
-const prompt = (page: Page) => page.getByRole("dialog", { name: "ShardBrowser Launcher 2.1.7 is available" })
-  .or(page.getByRole("alertdialog", { name: "ShardBrowser Launcher 2.1.7 is available" }));
+const prompt = (page: Page) => page.getByRole("dialog", { name: "ZimiBrowser 2.1.7 is available" })
+  .or(page.getByRole("alertdialog", { name: "ZimiBrowser 2.1.7 is available" }));
 
 // The first check waits a few seconds after the start.
 test.describe.configure({ timeout: 45_000 });

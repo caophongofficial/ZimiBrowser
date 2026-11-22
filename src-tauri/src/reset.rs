@@ -1,6 +1,6 @@
 //! Delete all data (Settings > Storage): the launcher back to a first start,
 //! with nothing deleted. Every entry the app owns moves into a new backup
-//! folder, `shardx-launcher-backup-<date-time>/`, on the same disk as the
+//! folder, `zimibrowser-backup-<date-time>/`, on the same disk as the
 //! entry: one beside the config folder, and one beside a moved data folder
 //! that sits on another disk, both under the same name. Every move is then
 //! one atomic rename; a rename that would cross disks is a failure, and
@@ -72,12 +72,12 @@ const DATA_ENTRIES: &[&str] = &["user-data", "extensions", "trash", "profiles", 
 /// profile names. The engine beside them stays.
 const RUNTIME_ENTRIES: &[&str] = &["profile-icons"];
 
-const CONFIG_NAME: &str = "shardx-launcher";
+const CONFIG_NAME: &str = "zimibrowser";
 const CONFIG_MARKER: &str = "settings.json";
 const DATA_MARKER: &str = "profiles";
 
-/// A backup: `<parent>/shardx-launcher-backup-<stamp>[-n]/`.
-const BACKUP_PREFIX: &str = "shardx-launcher-backup-";
+/// A backup: `<parent>/zimibrowser-backup-<stamp>[-n]/`.
+const BACKUP_PREFIX: &str = "zimibrowser-backup-";
 /// Inside it, where a moved data folder's entries go.
 const MOVED_DATA: &str = "moved-data";
 const README: &str = "README.txt";

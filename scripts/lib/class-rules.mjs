@@ -5,7 +5,7 @@
 // text, so scripts/check-classes.test.mjs can test every rule without
 // Tailwind.
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, sep } from "node:path";
 
 /** Class-like tokens in one string. */
 export const tokensOf = (s) => s.match(/[^\s"'`{}<;]+/g) ?? [];
@@ -206,10 +206,12 @@ const SKIP = [/^src\/dev\//, /^src\/shared\/i18n\//, /\.test\.[jt]sx?$/];
 /** Every violation in the app, the kit components and the app stylesheets: [{ file, rule, message, line, token }]. */
 export function scanRules(root) {
   const hits = [];
+  // Allowlists are checked-in text files and use POSIX separators on every OS.
+  const relPath = (p) => relative(root, p).split(sep).join("/");
   const walk = (dir) => {
     for (const name of readdirSync(dir)) {
       const p = join(dir, name);
-      const rel = relative(root, p);
+      const rel = relPath(p);
       if (SKIP.some((re) => re.test(rel))) continue;
       if (statSync(p).isDirectory()) walk(p);
       else if (/\.(tsx?|jsx?)$/.test(name)) {

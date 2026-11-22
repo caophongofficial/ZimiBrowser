@@ -25,7 +25,7 @@ const TEXT_PROPS = new Set([
 // Same in every language: product and protocol names, OS names, the language
 // picker's own entries, and samples of code or headers.
 const KEEP = new Set([
-  "ShardBrowser", "ShardBrowser Launcher", "ProxyShard", "ShardX", "Shard Helper", "GitHub", "MCP", "GPU", "CPU",
+  "ShardBrowser", "ShardBrowser Launcher", "ZimiBrowser", "ProxyShard", "ShardX", "Shard Helper", "GitHub", "MCP", "GPU", "CPU",
   "URL", "SQL", "UDP", "TCP", "HTTP", "HTTPS", "SOCKS5", "Canvas", "WebGL",
   "WebGPU", "WebRTC", "TLS", "CDP", "API", "JSON", "Cookie", "User-Agent",
   "macOS", "MacOS", "Windows", "Windows 10", "Windows 11", "Linux", "Android",
@@ -100,6 +100,7 @@ for (const file of files) {
 }
 
 const en = JSON.parse(readFileSync(join(LOCALES, "en.json"), "utf8"));
+const vi = JSON.parse(readFileSync(join(LOCALES, "vi.json"), "utf8"));
 const zh = JSON.parse(readFileSync(join(LOCALES, "zh.json"), "utf8"));
 const ru = JSON.parse(readFileSync(join(LOCALES, "ru.json"), "utf8"));
 
@@ -119,7 +120,7 @@ for (const file of [...files, ...kitFiles]) {
     if (line.includes(MIDDOT)) problems.push([relative(ROOT, file), i + 1, "middle dot (·): not used in the UI"]);
   });
 }
-for (const [name, dict] of [["en", en], ["zh", zh], ["ru", ru]]) {
+for (const [name, dict] of [["en", en], ["vi", vi], ["zh", zh], ["ru", ru]]) {
   for (const [key, value] of Object.entries(dict)) {
     if (String(value).includes(MIDDOT)) problems.push([`locales/${name}.json`, key, "middle dot (·): not used in the UI"]);
   }
@@ -131,25 +132,31 @@ const ALLOW = join(ROOT, "scripts/copy-rules.allow.json");
 const allow = existsSync(ALLOW) ? JSON.parse(readFileSync(ALLOW, "utf8")) : {};
 const PATCHLOG = join(SRC, "widgets/WhatsNewDialog/patchlog.json");
 const notes = existsSync(PATCHLOG) ? noteTexts(JSON.parse(readFileSync(PATCHLOG, "utf8"))) : [];
-const copy = copyProblems({ en, zh, ru, notes });
+const copy = copyProblems({ en, vi, zh, ru, notes });
 for (const p of copy) if (!allowed(allow, p)) problems.push(["copy", p.where, `${p.rule}: ${p.message}`]);
 for (const s of staleAllow(allow, copy)) problems.push(["scripts/copy-rules.allow.json", s.rule, `${s.where} no longer breaks this rule: delete the line`]);
 // A command-label key the list still names must exist: delete it when its label goes.
 for (const k of COMMAND_KEYS) if (!(k in en)) problems.push(["scripts/lib/copy-rules.mjs", k, "COMMAND_KEYS names a key that is not in en.json: delete it"]);
 const missingEn = [...called].filter((k) => !(k in en)).sort();
+const missingVi = Object.keys(en).filter((k) => !(k in vi)).sort();
 const missingZh = Object.keys(en).filter((k) => !(k in zh)).sort();
 const missingRu = Object.keys(en).filter((k) => !(k in ru)).sort();
 // A key only a translation has is one the English lost: delete it there too.
-const extra = [...Object.keys(zh).filter((k) => !(k in en)).map((k) => `zh.json: ${k}`), ...Object.keys(ru).filter((k) => !(k in en)).map((k) => `ru.json: ${k}`)].sort();
+const extra = [
+  ...Object.keys(vi).filter((k) => !(k in en)).map((k) => `vi.json: ${k}`),
+  ...Object.keys(zh).filter((k) => !(k in en)).map((k) => `zh.json: ${k}`),
+  ...Object.keys(ru).filter((k) => !(k in en)).map((k) => `ru.json: ${k}`),
+].sort();
 const unused = Object.keys(en).filter((k) => !called.has(k)).sort();
 
 for (const [f, line, what] of problems) console.log(`${f}:${line}  ${what}`);
 if (missingEn.length) console.log(`\nkeys called but not in en.json:\n  ${missingEn.join("\n  ")}`);
+if (missingVi.length) console.log(`\nkeys in en.json but not in vi.json:\n  ${missingVi.join("\n  ")}`);
 if (missingZh.length) console.log(`\nkeys in en.json but not in zh.json:\n  ${missingZh.join("\n  ")}`);
 if (missingRu.length) console.log(`\nkeys in en.json but not in ru.json:\n  ${missingRu.join("\n  ")}`);
 if (extra.length) console.log(`\nkeys in a translation but not in en.json:\n  ${extra.join("\n  ")}`);
 if (unused.length) console.log(`\nkeys in en.json that nothing calls:\n  ${unused.join("\n  ")}`);
 
-const bad = problems.length + missingEn.length + missingZh.length + missingRu.length + extra.length + unused.length;
+const bad = problems.length + missingEn.length + missingVi.length + missingZh.length + missingRu.length + extra.length + unused.length;
 console.log(bad ? `\n${bad} problem(s)` : `i18n OK — ${Object.keys(en).length} keys, all called, all translated`);
 process.exit(bad ? 1 : 0);

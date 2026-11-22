@@ -1,7 +1,7 @@
 # ShardBrowser MCP server
 
 An [MCP](https://modelcontextprotocol.io) server that lets an AI client
-(Claude Desktop, Cursor, …) drive the **ShardBrowser Launcher**:
+(Claude Desktop, Cursor, …) drive the **ZimiBrowser**:
 
 - the local automation **HTTP API** — create/edit/launch/close profiles,
   manage proxies, fingerprints, folders and cookies;
