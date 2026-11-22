@@ -24,7 +24,9 @@ Bản portable cần WebView2 có sẵn trên Windows 10/11. Engine được gi�
 
 ## Hướng dẫn sử dụng
 
-Xem [hướng dẫn tiếng Việt](docs/HUONG_DAN_NGUOI_DUNG.md).
+- [Hướng dẫn tiếng Việt](docs/HUONG_DAN_NGUOI_DUNG.md)
+- [Câu hỏi thường gặp và lỗi đã gặp](docs/CAU_HOI_THUONG_GAP.md): phân biệt bản preview/app thật, mở cửa sổ hồ sơ, proxy free, Web Store proxy, updater, test fingerprint.
+- [Release notes bản final](docs/RELEASE_NOTES_v2.1.6.md): danh sách artifact và hash SHA-256.
 
 Tài liệu gốc của ShardBrowser được giữ tại [docs/README.upstream.md](docs/README.upstream.md) để đối chiếu.
 
@@ -34,18 +36,15 @@ Yêu cầu: Node.js 20+, Rust 1.98+, Visual Studio Build Tools 2022, CMake, NASM
 
 Các công cụ build portable được đặt trong `tools/` và đã được gitignore.
 
+Engine Windows được lưu trong `src-tauri/bundled/runtime-parts/ShardX-Windows.zip.001..004` (~206 MB sau khi ghép). GitHub public fork từ chối upload LFS, nên file lớn được chia thành 4 phần nhỏ hơn 100 MB. `src-tauri/build.rs` tự ghép thành `ShardX-Windows.zip` trước khi Rust đọc; không cần tải tay và không cần Git LFS.
+
 ```powershell
 npm install
 npm run check
 npm run tauri build
 ```
 
-File engine `src-tauri/bundled/ShardX-Windows.zip` (~206 MB) được lưu bằng Git LFS để source fork vẫn có thể build offline. Nếu clone bằng Git LFS:
-
-```powershell
-git lfs install
-git lfs pull
-```
+Không bật lại CDN cho runtime hoặc fingerprint. Cấu hình updater có endpoints rỗng; cập nhật bằng cách chạy bộ cài mới.
 
 ## Ghi công
 

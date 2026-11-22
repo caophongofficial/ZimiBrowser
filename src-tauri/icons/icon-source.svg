@@ -1,12 +1,17 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="zimi" x1="256" y1="24" x2="256" y2="488" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#5B53FF"/>
-      <stop offset="1" stop-color="#1CBB D6"/>
+    <linearGradient id="g" x1="48" y1="48" x2="464" y2="464" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3D7BFF"/>
+      <stop offset="1" stop-color="#00AFCB"/>
     </linearGradient>
   </defs>
-  <rect x="28" y="28" width="456" height="456" rx="118" fill="url(#zimi)"/>
-  <rect x="40" y="40" width="432" height="432" rx="106" stroke="white" stroke-opacity="0.28" stroke-width="4"/>
-  <text x="256" y="286" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="282" font-weight="700" fill="white">Z</text>
-  <text x="256" y="397" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="700" letter-spacing="5" fill="white" fill-opacity="0.92">ZIMI</text>
+  <rect x="48" y="48" width="416" height="416" rx="92" fill="url(#g)"/>
+  <rect x="74" y="74" width="364" height="364" rx="72" stroke="white" stroke-opacity=".92" stroke-width="12"/>
+  <path d="M74 146H438" stroke="white" stroke-opacity=".92" stroke-width="12"/>
+  <circle cx="108" cy="110" r="12" fill="white"/>
+  <circle cx="148" cy="110" r="12" fill="white"/>
+  <circle cx="188" cy="110" r="12" fill="white"/>
+  <path d="M256 166L340 202V294C340 350 301 389 256 410C211 389 172 350 172 294V202L256 166Z" stroke="white" stroke-width="12" stroke-linejoin="round"/>
+  <circle cx="256" cy="262" r="18" fill="white"/>
+  <path d="M240 284H272L266 322H246L240 284Z" fill="white"/>
 </svg>

@@ -250,16 +250,40 @@ export const SpinnerIcon = make(Loading03Icon, "spinner");
 
 export function ZimiLogo() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M2.5 3h15v3.1l-9.2 9.1H17.5V18h-15v-3.1l9.2-9.1H2.5V3Z" fill="currentColor" />
+    <svg width="22" height="22" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="zimiLogoGradient" x1="6" y1="6" x2="58" y2="58" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#3D7BFF" />
+          <stop offset="1" stopColor="#00AFCB" />
+        </linearGradient>
+      </defs>
+      <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#zimiLogoGradient)" />
+      <rect x="8" y="9" width="48" height="46" rx="8" stroke="white" strokeOpacity=".9" strokeWidth="2" />
+      <path d="M8 18H56" stroke="white" strokeOpacity=".9" strokeWidth="2" />
+      <circle cx="13" cy="13.5" r="1.5" fill="white" />
+      <circle cx="18" cy="13.5" r="1.5" fill="white" />
+      <circle cx="23" cy="13.5" r="1.5" fill="white" />
+      <path d="M32 22 43 26.5V37C43 44 38 49 32 51.5 26 49 21 44 21 37V26.5L32 22Z" stroke="white" strokeWidth="2" strokeLinejoin="round" />
+      <circle cx="32" cy="33" r="2.3" fill="white" />
+      <path d="M30 37H34L33 41H31L30 37Z" fill="white" />
     </svg>
   );
 }
 
 export function ZimiMini() {
   return (
-    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M2.5 3h15v3.1l-9.2 9.1H17.5V18h-15v-3.1l9.2-9.1H2.5V3Z" fill="currentColor" />
+    <svg width="18" height="18" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="zimiMiniGradient" x1="6" y1="6" x2="58" y2="58" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#3D7BFF" />
+          <stop offset="1" stopColor="#00AFCB" />
+        </linearGradient>
+      </defs>
+      <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#zimiMiniGradient)" />
+      <rect x="9" y="10" width="46" height="44" rx="8" stroke="white" strokeOpacity=".9" strokeWidth="2.5" />
+      <path d="M32 23 42 27V37C42 43 37.5 47.5 32 50 26.5 47.5 22 43 22 37V27L32 23Z" stroke="white" strokeWidth="2.5" strokeLinejoin="round" />
+      <circle cx="32" cy="34" r="2.5" fill="white" />
+      <path d="M30 38H34L33 42H31L30 38Z" fill="white" />
     </svg>
   );
 }
