@@ -20,13 +20,13 @@ Bản portable cần WebView2 có sẵn trên Windows 10/11. Dữ liệu của m
 
 ```text
 ZimiBrowser-2.1.6-x64-setup.exe
-0731467D56E83239CC4095FFAA92974CBC20F546589E4292590F031E1E6FB952
+0382270E92EF343981F6A1AE410B2C1608F437BC8F4D0BFE7C89175DDB229044
 
 ZimiBrowser-2.1.6-x64.msi
-F2B78F573F7B6F06BC6F6995129882D6254DD2A95FDB6B893929FC8A3119AB0C
+89CA55DC53AD8D8A2F855C2F57DD4C4B05655A6ADF257AA11EEC70096D3818FD
 
 ZimiBrowser-portable-win-x64.exe
-8E9930F5D3156BA6F5A63C2A546703FF97C849D5A1534D3FEB99A8887462E772
+22FF5100A33BE46C4612433BB5C40F0EABB2D2F7AE81B1CF136EAC7889016727
 ```
 
 ## Có gì trong bản này
@@ -39,6 +39,7 @@ ZimiBrowser-portable-win-x64.exe
 - Sửa lỗi crash lúc khởi động do plugin updater nhận cấu hình `null`. Cấu hình mới để endpoints rỗng nên app không tự tải bản cập nhật qua mạng.
 - Ngắt popup dùng thử/quảng cáo ShardX lúc khởi động. Trang ShardX, API key, đơn hàng và import proxy vẫn dùng bình thường.
 - Sửa so sánh phiên bản: tag `v2.1.6-zimi-final` không còn bị coi là bản mới hơn `2.1.6`. Khi phát hành bản có số phiên bản cao hơn, app vẫn hiện thông báo cập nhật và link tải từ GitHub Releases.
+- Nút tắt của thẻ "Vấn đề cần khắc phục" nằm đúng góc trên-phải của thẻ. Trước đây ở thẻ rộng nó dừng ở cuối cột chữ nên lơ lửng giữa thẻ; chỉ đổi vị trí hiển thị, hành vi ẩn/thu gọn giữ nguyên.
 - Giữ nguyên toàn bộ logic gốc: hồ sơ, proxy, dấu vân tay, tiện ích mở rộng, dấu trang, tự động hóa, nhóm/đồng bộ, Local API, MCP và Trash.
 
 ## Lưu ý khi dùng
