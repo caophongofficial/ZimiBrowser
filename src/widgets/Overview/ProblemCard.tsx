@@ -64,7 +64,7 @@ export function ProblemCard({ model, fresh, slot, onLeave }: { model: CardModel;
         fresh && "starting:opacity-0",
       )}
     >
-      <div className="col-start-1 row-start-1 flex h-[21px] min-w-0 items-center gap-2">
+      <div className="col-start-1 row-start-1 flex h-[21px] min-w-0 items-center gap-2 @max-[640px]/card:pr-[26px]">
         {/* eslint-disable-next-line no-restricted-syntax -- the card's title is its keyboard stop; the kit Button's type role and padding would replace the card's label */}
         <button
           type="button"
@@ -76,13 +76,16 @@ export function ProblemCard({ model, fresh, slot, onLeave }: { model: CardModel;
         </button>
         <Badge shape="pill" color={model.pill.color} className="shrink-0 tabular-nums">{model.pill.text}</Badge>
         <span className="min-w-0 flex-1" />
-        {model.hide && (
-          // At rest a card shows what needs you; Hide comes with the pointer or the keyboard.
-          <span data-card-action="" className="flex opacity-0 group-hover/card:opacity-100 group-focus-within/card:opacity-100">
-            <DismissButton label={t("overview.hide")} onClick={model.hide} />
-          </span>
-        )}
       </div>
+      {/* The card's own top-right corner, out of the text row: in a wide card
+          the row ends where the text column does, which left Hide floating
+          mid-card, short of the corner it closes. At rest a card shows what
+          needs you; Hide comes with the pointer or the keyboard. */}
+      {model.hide && (
+        <span data-card-action="" className="absolute top-cell right-cell flex opacity-0 group-hover/card:opacity-100 group-focus-within/card:opacity-100">
+          <DismissButton label={t("overview.hide")} onClick={model.hide} />
+        </span>
+      )}
       {/* The sentence, why it matters and the detail sit together between the
           title and the fix, the same 8 px from each; in a card stretched to
           its row's tallest they stay centered in the room, so neither gap is
